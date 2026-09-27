@@ -1,0 +1,51 @@
+---
+import { getCollection } from 'astro:content';
+import { sectionSlugs } from '../lib/content';
+
+const pathname = Astro.url.pathname;
+const isActive = (href: string) => href === '/' ? pathname === '/' : pathname.startsWith(href);
+const postGroups = await Promise.all(sectionSlugs.map(async (section) =>
+  (await getCollection(section)).map((post) => ({ title: post.data.title, section, slug: post.slug, category: post.data.category, tags: post.data.tags }))
+));
+const indexedPosts = postGroups.flat();
+---
+
+<header id="site-header" class="site-header sticky top-0 z-40 border-b border-borderLine bg-pureBlack/95 backdrop-blur-md">
+  <div class="header-inner mx-auto flex h-14 max-w-6xl items-center justify-between px-4">
+    <div class="flex items-center gap-5">
+      <button id="open-drawer" class="grid h-9 w-9 place-items-center rounded-md text-slate-300 transition hover:bg-white/10 hover:text-white" aria-label="Abrir menú" aria-controls="drawer" aria-expanded="false"><svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+      <a class="header-brand hidden text-xs font-bold uppercase tracking-[.18em] text-white sm:block" href="/">Calvo Blog</a>
+      <nav class="header-nav hidden items-center gap-5 text-xs font-medium text-slate-300 lg:flex" aria-label="Navegación principal">
+        <a href="/" class:list={['border-b pb-0.5 transition-colors', isActive('/') ? 'border-white text-white' : 'border-transparent hover:text-white']} aria-current={isActive('/') ? 'page' : undefined}>Inicio</a>
+        <a href="/tutoriales" class:list={['border-b pb-0.5 transition-colors', isActive('/tutoriales') ? 'border-amberBtn text-white' : 'border-transparent hover:text-white']} aria-current={isActive('/tutoriales') ? 'page' : undefined}>Tutoriales</a>
+        <a href="/guias" class:list={['border-b pb-0.5 transition-colors', isActive('/guias') ? 'border-amberBtn text-white' : 'border-transparent hover:text-white']} aria-current={isActive('/guias') ? 'page' : undefined}>Guías</a>
+        <a href="/noticias" class:list={['border-b pb-0.5 transition-colors', isActive('/noticias') ? 'border-amberBtn text-white' : 'border-transparent hover:text-white']} aria-current={isActive('/noticias') ? 'page' : undefined}>Noticias</a>
+        <a href="/articulos" class:list={['border-b pb-0.5 transition-colors', isActive('/articulos') ? 'border-amberBtn text-white' : 'border-transparent hover:text-white']} aria-current={isActive('/articulos') ? 'page' : undefined}>Artículos</a>
+      </nav>
+    </div>
+    <div class="header-actions flex items-center gap-2 sm:gap-3">
+      <button id="open-search" class="grid h-9 w-9 place-items-center rounded-md text-slate-300 transition hover:bg-white/10 hover:text-white" aria-label="Buscar" aria-controls="search-panel" aria-expanded="false"><svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m21 21-4.35-4.35m2.35-5.65a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"/></svg></button>
+      <a href="/solicitar" class="rounded-md bg-amberBtn px-3.5 py-2 text-xs font-bold text-black transition hover:bg-amberHover sm:px-4">Solicitar</a>
+    </div>
+  </div>
+  <div id="search-panel" class="search-panel absolute inset-x-0 top-full border-b border-borderLine bg-[#0a0b0d] px-4 py-5 shadow-2xl backdrop-blur-xl" aria-hidden="true">
+    <div class="mx-auto max-w-3xl"><label class="sr-only" for="site-search">Buscar contenido</label><div class="flex items-center rounded-lg border border-slate-500 bg-[#20242a] px-3 shadow-[0_12px_36px_rgba(0,0,0,.5)] focus-within:border-amberBtn"><svg class="h-4 w-4 shrink-0 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m21 21-4.35-4.35m2.35-5.65a7 7 0 1 1-14 0 7 7 0 0 1 14 0Z"/></svg><input id="site-search" type="search" autocomplete="off" placeholder="Busca tutoriales, guías, etiquetas…" class="w-full bg-transparent px-3 py-3 text-sm text-white placeholder:text-slate-300 focus:outline-none" /><kbd class="hidden rounded border border-slate-500 bg-black/30 px-1.5 py-0.5 text-[10px] text-slate-300 sm:block">ESC</kbd></div><p id="search-empty" class="mt-4 hidden text-sm text-slate-400">No encontramos resultados. Prueba con otra palabra.</p><ul id="search-results" class="mt-3 grid max-h-64 gap-2 overflow-y-auto sm:grid-cols-2">{indexedPosts.map((post) => <li data-search-item data-search-text={`${post.title} ${post.category} ${post.tags.join(' ')}`.toLowerCase()}><a href={`/${post.section}/${post.slug}`} class="block rounded-lg border border-borderLine bg-white/[.03] px-4 py-3 transition hover:border-amberBtn hover:bg-white/[.07]"><span class="text-[10px] font-bold uppercase tracking-widest text-amberBtn">{post.category}</span><span class="mt-1 block text-sm font-semibold text-white">{post.title}</span></a></li>)}</ul></div>
+  </div>
+</header>
+
+<script>
+  const header = document.querySelector<HTMLElement>('#site-header'); const drawerButton = document.querySelector<HTMLButtonElement>('#open-drawer'); const searchButton = document.querySelector<HTMLButtonElement>('#open-search'); const searchPanel = document.querySelector<HTMLElement>('#search-panel'); const searchInput = document.querySelector<HTMLInputElement>('#site-search'); const searchItems = [...document.querySelectorAll<HTMLElement>('[data-search-item]')]; const searchEmpty = document.querySelector<HTMLElement>('#search-empty');
+  const closeSearch = () => { searchPanel?.classList.remove('is-open'); searchPanel?.setAttribute('aria-hidden', 'true'); searchButton?.setAttribute('aria-expanded', 'false'); };
+  const setCompactHeader = () => { header?.classList.toggle('is-scrolled', window.scrollY > 72); if (window.scrollY > 72) closeSearch(); };
+  drawerButton?.addEventListener('click', () => { document.dispatchEvent(new CustomEvent('toggleDrawer')); drawerButton.setAttribute('aria-expanded', 'true'); });
+  searchButton?.addEventListener('click', () => { const opening = !searchPanel?.classList.contains('is-open'); searchPanel?.classList.toggle('is-open', opening); searchPanel?.setAttribute('aria-hidden', String(!opening)); searchButton.setAttribute('aria-expanded', String(opening)); if (opening) searchInput?.focus(); });
+  searchInput?.addEventListener('input', () => { const term = searchInput.value.trim().toLowerCase(); let visible = 0; searchItems.forEach((item) => { const matches = item.dataset.searchText?.includes(term) ?? false; item.classList.toggle('hidden', !matches); if (matches) visible += 1; }); searchEmpty?.classList.toggle('hidden', visible !== 0); });
+  document.addEventListener('keydown', (event) => { if (event.key === 'Escape') closeSearch(); if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === 'k') { event.preventDefault(); searchButton?.click(); } });
+  window.addEventListener('scroll', setCompactHeader, { passive: true }); setCompactHeader();
+</script>
+
+<style>
+  .site-header { transition: background-color .25s ease, border-color .25s ease; } .header-brand, .header-nav, .header-actions { transition: opacity .2s ease, transform .25s ease, width .25s ease, margin .25s ease; } .site-header.is-scrolled { border-color: transparent; background: transparent; backdrop-filter: none; } .site-header.is-scrolled .header-inner { justify-content: flex-start; padding-left: .5rem; } .site-header.is-scrolled .header-brand, .site-header.is-scrolled .header-nav, .site-header.is-scrolled .header-actions { width: 0; margin: 0; opacity: 0; pointer-events: none; transform: translateY(-12px); overflow: hidden; } .site-header.is-scrolled #open-drawer { border: 1px solid rgba(255,255,255,.18); background: rgba(13,14,16,.9); box-shadow: 0 8px 25px rgba(0,0,0,.25); } .search-panel { opacity: 0; pointer-events: none; transform: translateY(-12px); transition: opacity .2s ease, transform .2s ease; } .search-panel.is-open { opacity: 1; pointer-events: auto; transform: translateY(0); }
+  @media (max-width: 639px) { .header-inner { height: 3.5rem; } .site-header.is-scrolled .header-inner { padding-left: .25rem; } .search-panel { padding: .75rem; } }
+  @media (prefers-reduced-motion: reduce) { .site-header, .header-brand, .header-nav, .header-actions, .search-panel { transition: none; } }
+</style>
