@@ -59,7 +59,7 @@ export default async function handler(request, response) {
             <div style="margin:0 auto;max-width:600px;overflow:hidden;border:1px solid #272a2f;border-radius:16px;background:#111315">
               <div style="padding:28px 32px;background:#08090a;border-bottom:1px solid #272a2f">
                 <a href="${siteUrl}" style="color:#fff;text-decoration:none">
-                  <img src="${siteUrl}/favicon.ico" width="32" height="32" alt="Bycalvo Services" style="margin-right:10px;vertical-align:middle;border-radius:8px">
+                  <img src="${siteUrl}/logo.png" width="32" height="32" alt="Bycalvo Services" style="margin-right:10px;vertical-align:middle;border-radius:8px">
                   <span style="vertical-align:middle;color:#fff;font-size:18px;font-weight:700;letter-spacing:2px">BYCALVO SERVICES</span>
                 </a>
               </div>
