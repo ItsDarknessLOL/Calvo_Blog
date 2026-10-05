@@ -1,0 +1,32 @@
+---
+import { getCollection, type CollectionEntry } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Card from '../../components/Card.astro';
+import { sections, sectionSlugs, type SectionSlug } from '../../lib/content';
+
+export function getStaticPaths() {
+  return sectionSlugs.map((category) => ({ params: { category } }));
+}
+
+const category = Astro.params.category as SectionSlug;
+const section = sections[category];
+type BlogPost = CollectionEntry<SectionSlug>;
+const posts = (await getCollection(category) as BlogPost[]).sort((a: BlogPost, b: BlogPost) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+---
+
+<BaseLayout title={section.label} description={section.description}>
+  <section class="mx-auto w-full px-[var(--page-gutter)] py-12 sm:py-16" style="max-width: var(--site-max)">
+    <p class="text-xs font-bold uppercase tracking-[0.2em] text-amberBtn">Biblioteca</p>
+    <h1 class="mt-2 text-4xl font-extrabold text-white">{section.label}</h1>
+    <p class="mt-3 max-w-2xl text-slate-300">{section.description}</p>
+    <div class="mt-10 grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+      {posts.map((post: BlogPost) => <Card {...post.data} section={category} slug={post.slug} actionText={`Ver ${post.data.category}`} />)}
+    </div>
+    <div class="mt-12 flex justify-center">
+      <a href="/" class="group/action inline-flex items-center gap-2 rounded-lg border border-amberBtn/50 px-5 py-3 text-sm font-bold text-amberBtn transition hover:bg-amberBtn hover:text-black">
+        Regresar al inicio
+        <svg class="h-4 w-4 transition-transform group-hover/action:-translate-y-0.5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 16V4M5 9l5-5 5 5"/></svg>
+      </a>
+    </div>
+  </section>
+</BaseLayout>

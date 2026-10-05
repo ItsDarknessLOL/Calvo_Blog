@@ -1,0 +1,95 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  category: string;
+  tags: string[];
+  heroImage?: string;
+  heroImageAlt?: string;
+  slug: string;
+  section: string;
+  actionText?: string; // "Ver Tutorial", "Ver Noticia", "Ver Guía", "Leer Artículo"
+  sourceUrl?: string;
+  sourceLabel?: string;
+  interactive?: { type: 'game' | 'simulator' | 'challenge' | 'worksheet'; label: string; href: string };
+}
+
+const { 
+  title, 
+  description, 
+  category, 
+  tags = [], 
+  heroImage, 
+  heroImageAlt = "Imagen de portada", 
+  slug,
+  section,
+  actionText = "Ver Contenido",
+  sourceUrl,
+  sourceLabel = 'Ver fuente',
+  interactive,
+} = Astro.props;
+---
+
+<article class="group flex flex-col justify-between space-y-5 rounded-xl border border-amberBtn/15 bg-cardGray p-5 text-cardText transition duration-200 hover:-translate-y-1 hover:border-amberBtn/55 hover:shadow-[0_18px_45px_rgba(0,0,0,.42)]">
+  
+  <div class="space-y-4">
+    <!-- Renderizado condicional de la Imagen -->
+    {heroImage && (
+      <div class="post-art-frame aspect-video w-full rounded-lg overflow-hidden bg-gray-300">
+        <img 
+          src={heroImage} 
+          alt={heroImageAlt} 
+          class="post-art h-full w-full object-cover"
+          loading="lazy"
+        />
+      </div>
+    )}
+
+    <!-- Encabezado y Descripción -->
+    <div class="space-y-2">
+      <h3 class="text-lg font-bold leading-snug text-white">
+        {title}
+      </h3>
+      <p class="text-xs text-slate-300 line-clamp-2">
+        {description}
+      </p>
+    </div>
+  </div>
+
+  {interactive && (
+    <a href={interactive.href} class="group/demo relative block overflow-hidden rounded-lg border border-cardText/20 bg-cardText px-4 py-3 text-white transition hover:border-amberBtn" aria-label={`Abrir ${interactive.label}`}>
+      <div class="absolute inset-0 bg-[radial-gradient(circle_at_20%_0%,rgba(255,204,0,.28),transparent_45%)]"></div>
+      <div class="relative flex items-center justify-between gap-3">
+        <div><span class="text-[10px] font-bold uppercase tracking-widest text-amberBtn">{{ game: 'Mini laboratorio', simulator: 'Simulador', challenge: 'Reto práctico', worksheet: 'Hoja de práctica' }[interactive.type]}</span><p class="mt-1 text-xs font-semibold">{interactive.label}</p></div>
+        <span class="grid h-9 w-9 place-items-center rounded-full bg-amberBtn text-black transition group-hover/demo:scale-110" aria-hidden="true"><svg class="h-4 w-4 transition-transform group-hover/demo:translate-x-0.5 group-hover/demo:-translate-y-0.5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 15 15 5M7 5h8v8"/></svg></span>
+      </div>
+    </a>
+  )}
+
+  <!-- Footer de la Card: Badges + Botón de Acción -->
+  <div class="space-y-4 pt-2">
+    <!-- Etiquetas / Categorías -->
+    <div class="flex flex-wrap items-center gap-2 text-[10px] font-semibold">
+      <span class="rounded border border-amberBtn/30 bg-amberBtn/10 px-2.5 py-1 text-amberBtn">
+        {category}
+      </span>
+      {tags.map((tag) => (
+        <span class="rounded bg-white/10 px-2.5 py-1 text-slate-300">
+          {tag}
+        </span>
+      ))}
+    </div>
+
+    <!-- Botón Principal Amarillo con Enlace Dinámico -->
+    <div class="grid gap-2" class:list={{ 'sm:grid-cols-2': sourceUrl }}>
+      <a 
+        href={`/${section}/${slug}`} 
+        class="group/action flex w-full items-center justify-center gap-2 bg-amberBtn py-2.5 text-center text-sm font-bold text-black transition-colors hover:bg-amberHover rounded-xl"
+      >
+        {actionText}<svg class="h-4 w-4 transition-transform group-hover/action:translate-x-1" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 10h13M11 5l5 5-5 5"/></svg>
+      </a>
+      {sourceUrl && <a href={sourceUrl} target="_blank" rel="noreferrer" class="block w-full rounded-xl border border-slate-500 px-3 py-2.5 text-center text-sm font-bold text-slate-200 transition hover:border-amberBtn hover:text-amberBtn">{sourceLabel} <span aria-hidden="true">↗</span></a>}
+    </div>
+  </div>
+
+</article>

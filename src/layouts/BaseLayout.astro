@@ -1,0 +1,86 @@
+---
+import Header from '../components/Header.astro';
+import Drawer from '../components/Drawer.astro';
+import Footer from '../components/Footer.astro';
+import SiteTools from '../components/SiteTools.astro';
+import '../styles/global.css';
+import favicon from '../assets/imagenes/icon/favicon.ico';
+
+interface Props {
+  title: string;
+  description?: string;
+  image?: string;
+  navbarAction?: {
+    label: string;
+    href: string;
+  };
+}
+
+const { title, description = "Aprende lógica digital, programación, hardware y software.", image = '/images/hero/circuits.svg', navbarAction } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title} | Calvo Blog</title>
+    <meta name="description" content={description} />
+    <link rel="icon" href={favicon} sizes="128x128" />
+    <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={`${title} | Calvo Blog`} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={new URL(image, Astro.site)} />
+  </head>
+  <body class="bg-darkPage text-white min-h-screen flex flex-col selection:bg-amberBtn selection:text-black">
+    
+    <!-- Menú Lateral (Oculto por defecto) -->
+    <Drawer />
+
+    <!-- Barra de Navegación -->
+    <Header navbarAction={navbarAction} />
+
+    <!-- Contenido Dinámico de la Página -->
+    <main class="flex-grow w-full">
+      <slot />
+    </main>
+
+    <!-- Pie de Página -->
+    <Footer />
+    <SiteTools />
+
+  </body>
+</html>
+
+<style is:global>
+  body { font-family: Inter, system-ui, sans-serif; }
+  .post-art-frame { perspective: 900px; background: #0d0e10; }
+  .post-art { transform: scale(1.02) rotateX(0deg) translateZ(0); filter: saturate(.92) contrast(1.05) drop-shadow(0 10px 16px rgba(0,0,0,.32)); transition: transform .5s ease, filter .5s ease; }
+  .group:hover .post-art { transform: scale(1.07) rotateX(1.5deg) translateY(-2px); filter: saturate(1.08) contrast(1.08) drop-shadow(0 16px 24px rgba(255,204,0,.16)); }
+  body.a11y-high-contrast { background: #000 !important; }
+  body.a11y-high-contrast .text-slate-300, body.a11y-high-contrast .text-slate-400, body.a11y-high-contrast .text-slate-500 { color: #fff !important; }
+  body.a11y-high-contrast .border-borderLine { border-color: #fff !important; }
+  body.a11y-high-contrast .bg-cardGray, body.a11y-high-contrast .bg-darkPage { background-color: #000 !important; }
+  body.a11y-light { background: #f6f7fb !important; color: #172033 !important; }
+  body.a11y-light .bg-darkPage, body.a11y-light .bg-cardGray, body.a11y-light .bg-pureBlack { background-color: #fff !important; }
+  body.a11y-light .text-white, body.a11y-light .text-slate-100, body.a11y-light .text-slate-200 { color: #172033 !important; }
+  body.a11y-light .text-slate-300, body.a11y-light .text-slate-400, body.a11y-light .text-slate-500 { color: #4b5563 !important; }
+  body.a11y-light .border-borderLine { border-color: #d1d5db !important; }
+  body.a11y-light .bg-white\/10 { background-color: rgba(15, 23, 42, .08) !important; }
+  body.a11y-light .post-art-frame { background: #e5e7eb; }
+  body.a11y-light .site-tool { box-shadow: 0 8px 24px rgba(15, 23, 42, .18); }
+  .font-option.is-active { border-color: var(--accent-color, #ffcc00); background: color-mix(in srgb, var(--accent-color, #ffcc00) 18%, transparent); color: #fff; box-shadow: inset 0 0 0 1px var(--accent-color, #ffcc00); }
+  body.a11y-reduced-motion *, body.a11y-reduced-motion *::before, body.a11y-reduced-motion *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+  .a11y-option.is-active { border-color: var(--accent-color, #ffcc00); background: color-mix(in srgb, var(--accent-color, #ffcc00) 18%, transparent); color: #fff; box-shadow: inset 0 0 0 1px var(--accent-color, #ffcc00); }
+  .color-option.is-active { border-color: #fff; box-shadow: 0 0 0 2px #000, 0 0 0 4px var(--accent-color, #ffcc00); }
+  :root[data-accent="yellow"] { --accent-color: #ffcc00; --accent-hover: #ffe066; }
+  :root[data-accent="blue"] { --accent-color: #60a5fa; --accent-hover: #93c5fd; }
+  :root[data-accent="green"] { --accent-color: #4ade80; --accent-hover: #86efac; }
+  :root[data-accent="pink"] { --accent-color: #f472b6; --accent-hover: #f9a8d4; }
+  [data-accent] .text-amberBtn, [data-accent] .hover\:text-amberBtn:hover { color: var(--accent-color) !important; }
+  [data-accent] .bg-amberBtn { background-color: var(--accent-color) !important; }
+  [data-accent] .hover\:bg-amberHover:hover { background-color: var(--accent-hover) !important; }
+  [data-accent] .border-amberBtn, [data-accent] .border-amberBtn\/30, [data-accent] .border-amberBtn\/40, [data-accent] .border-amberBtn\/50, [data-accent] .border-amberBtn\/55 { border-color: color-mix(in srgb, var(--accent-color) 55%, transparent) !important; }
+  @media (prefers-reduced-motion: reduce) { .post-art { transition: none; } .group:hover .post-art { transform: none; } }
+</style>

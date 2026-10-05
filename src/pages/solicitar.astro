@@ -1,0 +1,27 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+---
+<BaseLayout title="Solicitar contenido" description="Propón un tema para Calvo Blog.">
+  <section class="mx-auto grid max-w-5xl gap-10 px-4 py-12 sm:py-16 md:grid-cols-[.8fr_1.2fr]"><div><p class="text-xs font-bold uppercase tracking-[0.2em] text-amberBtn">Comunidad</p><h1 class="mt-2 text-4xl font-extrabold text-white">Sugiere un tema</h1><p class="mt-4 leading-7 text-slate-300">¿Hay un circuito, herramienta o concepto que quisieras ver aquí? Envía tu propuesta y la recibiremos por correo.</p><p class="mt-6 text-sm text-slate-400">También puedes proponer cambios o contenido mediante un issue del repositorio.</p><a class="mt-4 inline-block text-sm font-bold text-amberBtn hover:text-amberHover" href="https://github.com/">Abrir GitHub →</a></div><form id="request-form" class="space-y-5 rounded-2xl border border-borderLine bg-black/30 p-6 sm:p-8"><p class="hidden" aria-hidden="true"><label>No rellenes este campo <input name="website" tabindex="-1" autocomplete="off" /></label></p><div><label for="nombre" class="mb-2 block text-sm font-semibold text-white">Nombre <span class="text-slate-400">opcional</span></label><input id="nombre" name="nombre" autocomplete="name" class="w-full rounded-lg border border-borderLine bg-darkPage px-3 py-2.5 text-white placeholder:text-slate-500 focus:border-amberBtn" placeholder="Tu nombre" /></div><div><label for="email" class="mb-2 block text-sm font-semibold text-white">Correo <span class="text-slate-400">opcional</span></label><input id="email" name="email" type="email" autocomplete="email" class="w-full rounded-lg border border-borderLine bg-darkPage px-3 py-2.5 text-white placeholder:text-slate-500 focus:border-amberBtn" placeholder="tu@correo.com" /></div><div><label for="tema" class="mb-2 block text-sm font-semibold text-white">Tema que propones</label><input id="tema" name="tema" required class="w-full rounded-lg border border-borderLine bg-darkPage px-3 py-2.5 text-white placeholder:text-slate-500 focus:border-amberBtn" placeholder="Ej. Cómo usar mapas de Karnaugh" /></div><div><label for="mensaje" class="mb-2 block text-sm font-semibold text-white">¿Qué te gustaría aprender?</label><textarea id="mensaje" name="mensaje" required rows="5" class="w-full resize-y rounded-lg border border-borderLine bg-darkPage px-3 py-2.5 text-white placeholder:text-slate-500 focus:border-amberBtn" placeholder="Cuéntanos el enfoque o ejemplo que te sería útil."></textarea></div><p id="form-status" class="hidden text-sm" aria-live="polite"></p><button id="submit-request" class="w-full rounded-lg bg-amberBtn px-5 py-3 text-sm font-bold text-black transition hover:bg-amberHover">Enviar solicitud</button></form></section>
+</BaseLayout>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>('#request-form');
+  const button = document.querySelector<HTMLButtonElement>('#submit-request');
+  const status = document.querySelector<HTMLElement>('#form-status');
+  form?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    if (!form.reportValidity()) return;
+    const data = Object.fromEntries(new FormData(form));
+    button!.disabled = true; button!.textContent = 'Enviando…';
+    try {
+      const response = await fetch('/api/solicitud', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+      if (!response.ok) throw new Error('No se pudo enviar');
+      window.location.assign('/gracias');
+    } catch {
+      status!.textContent = 'No pudimos enviar tu solicitud. Inténtalo de nuevo más tarde.';
+      status!.className = 'text-sm text-red-300';
+      button!.disabled = false; button!.textContent = 'Enviar solicitud';
+    }
+  });
+</script>

@@ -1,0 +1,10 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { sections, sectionSlugs } from '../lib/content';
+---
+<BaseLayout title="Explorar" description="Elige una ruta de aprendizaje técnico.">
+  <section class="mx-auto max-w-6xl px-4 py-12 sm:py-16">
+    <p class="text-xs font-bold uppercase tracking-[0.2em] text-amberBtn">Explorar</p><h1 class="mt-2 text-4xl font-extrabold text-white">¿Qué quieres aprender hoy?</h1>
+    <div class="mt-10 grid gap-5 md:grid-cols-2">{sectionSlugs.map((slug) => <a href={`/${slug}`} class="rounded-xl border border-borderLine bg-black/30 p-6 transition hover:border-amberBtn hover:bg-black/50"><p class="text-xs font-bold uppercase tracking-widest text-amberBtn">{sections[slug].singular}</p><h2 class="mt-2 text-2xl font-bold text-white">{sections[slug].label}</h2><p class="mt-3 text-sm leading-6 text-slate-300">{sections[slug].description}</p><span class="mt-6 inline-block text-sm font-bold text-white">Explorar →</span></a>)}</div>
+  </section>
+</BaseLayout>

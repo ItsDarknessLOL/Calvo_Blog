@@ -1,0 +1,248 @@
+---
+import { getCollection } from 'astro:content';
+import { sectionSlugs } from '../lib/content';
+
+const collections = await Promise.all(sectionSlugs.map((section) => getCollection(section)));
+type BlogPost = (typeof collections)[number][number];
+const knowledge = collections.flatMap((posts, index) => posts.map((post: BlogPost) => ({
+  title: post.data.title,
+  category: post.data.category,
+  description: post.data.description,
+  tags: post.data.tags,
+  body: post.body,
+  href: `/${sectionSlugs[index]}/${post.slug}`,
+})));
+---
+
+<button id="back-to-top" class="site-tool fixed bottom-5 right-5 z-40 hidden h-11 w-11 place-items-center rounded-full border border-amberBtn/50 bg-pureBlack/95 text-amberBtn shadow-lg transition hover:-translate-y-1 hover:bg-amberBtn hover:text-black" aria-label="Volver arriba" title="Volver arriba">
+  <svg class="h-5 w-5" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M10 16V4M5 9l5-5 5 5"/></svg>
+</button>
+
+<button id="accessibility-toggle" class="site-tool fixed bottom-5 left-5 z-40 grid h-11 w-11 place-items-center rounded-full border border-slate-500 bg-pureBlack/95 text-white shadow-lg transition hover:border-amberBtn hover:text-amberBtn" aria-label="Abrir opciones de accesibilidad" aria-controls="accessibility-panel" aria-expanded="false">
+  <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="5" r="2"/><path d="M5 8h14M12 8v11M8 20l4-7 4 7"/></svg>
+</button>
+<aside id="accessibility-panel" class="fixed bottom-20 left-5 z-40 hidden max-h-[calc(100vh-6rem)] w-72 overflow-y-auto rounded-xl border border-borderLine bg-pureBlack p-4 text-sm shadow-2xl" aria-hidden="true">
+  <h2 class="font-bold text-white">Accesibilidad</h2>
+  <div class="mt-3 grid grid-cols-2 gap-2">
+    <button data-a11y="font-up" class="a11y-option rounded border border-borderLine px-2 py-2 text-slate-200 hover:border-amberBtn" aria-pressed="false">Texto +</button>
+    <button data-a11y="font-down" class="a11y-option rounded border border-borderLine px-2 py-2 text-slate-200 hover:border-amberBtn" aria-pressed="false">Texto −</button>
+    <button data-a11y="contrast" class="a11y-option rounded border border-borderLine px-2 py-2 text-slate-200 hover:border-amberBtn" aria-pressed="false">Contraste</button>
+    <button data-a11y="motion" class="a11y-option rounded border border-borderLine px-2 py-2 text-slate-200 hover:border-amberBtn" aria-pressed="false">Reducir movimiento</button>
+  </div>
+  <h3 class="mt-4 text-xs font-bold uppercase tracking-wider text-slate-400">Tipo de texto</h3>
+  <div class="mt-2 grid grid-cols-3 gap-2" role="group" aria-label="Tipo de texto">
+    <button data-font="sans" class="font-option rounded border border-borderLine px-2 py-2 text-slate-200 hover:border-amberBtn" aria-pressed="false">Sans</button>
+    <button data-font="serif" class="font-option rounded border border-borderLine px-2 py-2 font-serif text-slate-200 hover:border-amberBtn" aria-pressed="false">Serif</button>
+    <button data-font="dyslexic" class="font-option rounded border border-borderLine px-2 py-2 text-slate-200 hover:border-amberBtn" aria-pressed="false">Clara</button>
+  </div>
+  <button data-a11y="light" class="a11y-option mt-3 w-full rounded border border-borderLine px-2 py-2 text-slate-200 hover:border-amberBtn" aria-pressed="false">Modo claro</button>
+  <h3 class="mt-4 text-xs font-bold uppercase tracking-wider text-slate-400">Color de énfasis</h3>
+  <div class="mt-2 grid grid-cols-4 gap-2" role="group" aria-label="Color de énfasis">
+    <button data-color="yellow" class="color-option h-8 rounded border-2 border-transparent bg-[#ffcc00]" aria-label="Amarillo" aria-pressed="false"></button>
+    <button data-color="blue" class="color-option h-8 rounded border-2 border-transparent bg-[#60a5fa]" aria-label="Azul" aria-pressed="false"></button>
+    <button data-color="green" class="color-option h-8 rounded border-2 border-transparent bg-[#4ade80]" aria-label="Verde" aria-pressed="false"></button>
+    <button data-color="pink" class="color-option h-8 rounded border-2 border-transparent bg-[#f472b6]" aria-label="Rosa" aria-pressed="false"></button>
+  </div>
+</aside>
+
+<button id="chat-toggle" class="site-tool fixed bottom-5 right-5 z-40 grid h-12 w-12 place-items-center rounded-full bg-amberBtn text-black shadow-lg transition-[bottom,transform] hover:scale-105" aria-label="Abrir asistente de contenido" aria-controls="chat-panel" aria-expanded="false">
+  <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 5h14v11H9l-4 4V5Z"/><path d="M8 9h8M8 12h5"/></svg>
+</button>
+<section id="chat-panel" class="fixed bottom-20 right-5 z-40 hidden w-[min(22rem,calc(100vw-2rem))] overflow-hidden rounded-xl border border-borderLine bg-pureBlack shadow-2xl" aria-hidden="true">
+  <div class="flex items-center justify-between border-b border-borderLine px-4 py-3"><div><h2 class="font-bold text-white">Asistente de Calvo Blog</h2><p class="text-[11px] text-slate-400">Respuestas basadas en el contenido publicado</p></div><button id="chat-close" class="text-slate-400 hover:text-white" aria-label="Cerrar asistente">×</button></div>
+  <div id="chat-messages" class="max-h-72 space-y-3 overflow-y-auto p-4 text-sm">
+    <p class="rounded-lg bg-white/10 p-3 text-slate-200">¡Hola! Soy el asistente de Calvo Blog. Puedo ayudarte a encontrar tutoriales, guías y artículos publicados.</p>
+    <p class="text-xs text-slate-400">También puedes elegir una pregunta:</p>
+    <div class="flex flex-wrap gap-2">
+      <button type="button" data-chat-question="¿Qué puedo aprender sobre lógica digital?" class="chat-suggestion rounded-full border border-borderLine px-3 py-1 text-xs text-slate-200 hover:border-amberBtn">Lógica digital</button>
+      <button type="button" data-chat-question="¿Qué es Logisim?" class="chat-suggestion rounded-full border border-borderLine px-3 py-1 text-xs text-slate-200 hover:border-amberBtn">¿Qué es Logisim?</button>
+      <button type="button" data-chat-question="¿Qué recursos recomiendas?" class="chat-suggestion rounded-full border border-borderLine px-3 py-1 text-xs text-slate-200 hover:border-amberBtn">Recursos</button>
+    </div>
+  </div>
+  <form id="chat-form" class="flex gap-2 border-t border-borderLine p-3"><label class="sr-only" for="chat-input">Pregunta</label><input id="chat-input" class="min-w-0 flex-1 rounded-lg border border-borderLine bg-white/10 px-3 py-2 text-sm text-white placeholder:text-slate-400 focus:border-amberBtn focus:outline-none" placeholder="¿Qué quieres aprender?" /><button class="rounded-lg bg-amberBtn px-3 py-2 text-sm font-bold text-black">Enviar</button></form>
+</section>
+
+<div id="cookie-notice" class="fixed inset-x-4 bottom-4 z-50 hidden rounded-xl border border-borderLine bg-pureBlack p-4 shadow-2xl sm:left-auto sm:max-w-md">
+  <p class="text-sm text-slate-200">Este sitio no usa cookies de seguimiento ni publicidad. Guardamos solo tus preferencias locales de accesibilidad y consentimiento para no mostrar este aviso de nuevo.</p>
+  <div class="mt-3 flex gap-2"><button id="cookie-accept" class="rounded-lg bg-amberBtn px-3 py-2 text-xs font-bold text-black">Entendido</button><a href="/cookies" class="rounded-lg border border-borderLine px-3 py-2 text-xs font-semibold text-slate-200 hover:border-amberBtn">Ver política</a></div>
+</div>
+
+<div id="site-tour" class="fixed inset-0 z-[60] hidden items-center justify-center bg-black/60 p-4 backdrop-blur-sm" aria-hidden="true">
+  <section id="site-tour-card" class="w-full max-w-md rounded-2xl border border-borderLine bg-pureBlack p-6 text-white shadow-2xl" role="dialog" aria-modal="true" aria-labelledby="site-tour-title" aria-describedby="site-tour-description">
+    <div class="flex items-start justify-between gap-4">
+      <div>
+        <p id="site-tour-progress" class="text-xs font-bold uppercase tracking-widest text-amberBtn">Recorrido 1 de 6</p>
+        <h2 id="site-tour-title" class="mt-2 text-xl font-bold">Bienvenido a Calvo Blog</h2>
+      </div>
+      <button id="site-tour-skip" class="text-sm text-slate-400 underline-offset-4 hover:text-white hover:underline">Saltar</button>
+    </div>
+    <p id="site-tour-description" class="mt-3 text-sm leading-6 text-slate-300">Aquí encontrarás tutoriales, guías, noticias y artículos para aprender tecnología con práctica.</p>
+    <div class="mt-6 flex items-center justify-between gap-3">
+      <button id="site-tour-prev" class="invisible rounded-lg border border-borderLine px-4 py-2 text-sm font-semibold text-slate-200 hover:border-amberBtn">Anterior</button>
+      <button id="site-tour-next" class="ml-auto rounded-lg bg-amberBtn px-4 py-2 text-sm font-bold text-black hover:bg-amberHover">Siguiente</button>
+    </div>
+  </section>
+</div>
+
+<script define:vars={{ knowledge }}>
+  const root = document.documentElement;
+  const body = document.body;
+  const topButton = document.querySelector('#back-to-top');
+  const chatButton = document.querySelector('#chat-toggle');
+  const chatPanel = document.querySelector('#chat-panel');
+  const toggleVisibility = () => {
+    const hasScrolled = window.scrollY >= 400;
+    topButton?.classList.toggle('hidden', !hasScrolled);
+    chatButton?.classList.toggle('bottom-5', !hasScrolled);
+    chatButton?.classList.toggle('bottom-20', hasScrolled);
+    chatPanel?.classList.toggle('bottom-20', !hasScrolled);
+    chatPanel?.classList.toggle('bottom-36', hasScrolled);
+  };
+  window.addEventListener('scroll', toggleVisibility, { passive: true }); toggleVisibility();
+  topButton?.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+  const a11yToggle = document.querySelector('#accessibility-toggle');
+  const a11yPanel = document.querySelector('#accessibility-panel');
+  a11yToggle?.addEventListener('click', () => { const open = a11yPanel?.getAttribute('aria-hidden') !== 'false'; a11yPanel?.classList.toggle('hidden', !open); a11yPanel?.setAttribute('aria-hidden', String(!open)); a11yToggle.setAttribute('aria-expanded', String(open)); });
+  let saved = {};
+  try {
+    const stored = localStorage.getItem('calvo-a11y');
+    saved = stored ? JSON.parse(stored) : {};
+  } catch {
+    localStorage.removeItem('calvo-a11y');
+  }
+  let fontScale = Number(saved.fontScale) || 1;
+  const fontFamilies = { sans: 'Inter, system-ui, sans-serif', serif: 'Georgia, Cambria, serif', dyslexic: '"OpenDyslexic", Verdana, sans-serif' };
+  const applyAccessibility = () => {
+    body.classList.toggle('a11y-high-contrast', Boolean(saved.contrast));
+    body.classList.toggle('a11y-reduced-motion', Boolean(saved.motion));
+    body.classList.toggle('a11y-light', Boolean(saved.light));
+    root.style.fontSize = `${fontScale * 100}%`;
+    body.style.fontFamily = fontFamilies[saved.font] || fontFamilies.sans;
+    root.style.scrollBehavior = saved.motion ? 'auto' : '';
+    root.dataset.accent = saved.accent || 'yellow';
+    document.querySelectorAll('[data-a11y]').forEach((button) => {
+      const type = button.dataset.a11y;
+      const active = type === 'contrast' ? Boolean(saved.contrast) : type === 'motion' ? Boolean(saved.motion) : type === 'light' ? Boolean(saved.light) : type === 'font-up' ? fontScale > 1 : type === 'font-down' ? fontScale < 1 : false;
+      button.setAttribute('aria-pressed', String(active));
+      button.classList.toggle('is-active', active);
+    });
+    document.querySelectorAll('[data-font]').forEach((button) => {
+      const active = button.dataset.font === (saved.font || 'sans');
+      button.setAttribute('aria-pressed', String(active));
+      button.classList.toggle('is-active', active);
+    });
+    document.querySelectorAll('[data-color]').forEach((button) => {
+      const active = button.dataset.color === (saved.accent || 'yellow');
+      button.setAttribute('aria-pressed', String(active));
+      button.classList.toggle('is-active', active);
+    });
+  };
+  applyAccessibility();
+  document.querySelectorAll('[data-a11y]').forEach((button) => button.addEventListener('click', () => {
+    const type = button.dataset.a11y;
+    if (type === 'font-up') fontScale = Math.min(1.25, Math.round((fontScale + 0.0625) * 100) / 100);
+    if (type === 'font-down') fontScale = Math.max(0.875, Math.round((fontScale - 0.0625) * 100) / 100);
+    if (type === 'contrast') saved.contrast = !saved.contrast;
+    if (type === 'motion') saved.motion = !saved.motion;
+    if (type === 'light') saved.light = !saved.light;
+    saved.fontScale = fontScale;
+    localStorage.setItem('calvo-a11y', JSON.stringify(saved));
+    applyAccessibility();
+  }));
+  document.querySelectorAll('[data-color]').forEach((button) => button.addEventListener('click', () => {
+    saved.accent = button.dataset.color || 'yellow';
+    localStorage.setItem('calvo-a11y', JSON.stringify(saved));
+    applyAccessibility();
+  }));
+  document.querySelectorAll('[data-font]').forEach((button) => button.addEventListener('click', () => {
+    saved.font = button.dataset.font || 'sans';
+    localStorage.setItem('calvo-a11y', JSON.stringify(saved));
+    applyAccessibility();
+  }));
+
+  const chatToggle = document.querySelector('#chat-toggle'); const messages = document.querySelector('#chat-messages'); const form = document.querySelector('#chat-form'); const input = document.querySelector('#chat-input');
+  const setChat = (open) => { chatPanel?.classList.toggle('hidden', !open); chatPanel?.setAttribute('aria-hidden', String(!open)); chatToggle?.setAttribute('aria-expanded', String(open)); if (open) input?.focus(); };
+  chatToggle?.addEventListener('click', () => setChat(chatPanel?.getAttribute('aria-hidden') !== 'false')); document.querySelector('#chat-close')?.addEventListener('click', () => setChat(false));
+  const escapeHtml = (value) => value.replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[char] ?? char));
+  const answerQuestion = (question) => {
+    if (!messages || !question) return;
+    messages.insertAdjacentHTML('beforeend', `<p class="ml-6 rounded-lg bg-amberBtn/15 p-3 text-slate-100">${escapeHtml(question)}</p>`);
+    const normalize = (value) => value.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^\p{L}\p{N}]+/gu, ' ');
+    const terms = normalize(question).split(/\s+/).filter((term) => term.length > 2);
+    const result = knowledge.map((item) => ({ item, score: terms.reduce((score, term) => score + (normalize(`${item.title} ${item.description} ${item.tags.join(' ')} ${item.body ?? ''}`).includes(term) ? 1 : 0), 0) })).sort((a, b) => b.score - a.score).filter(({ score }) => score > 0).slice(0, 2);
+    const answer = result.length
+      ? `¡Claro! Encontré ${result.length === 1 ? 'este contenido' : 'estos contenidos'} que pueden ayudarte:<br><br>${result.map(({ item }) => `<a class="font-semibold text-amberBtn hover:underline" href="${item.href}">${item.title}</a><br><span class="text-slate-300">${item.description}</span>`).join('<br><br>')}`
+      : 'Todavía no encuentro una coincidencia clara, pero puedo buscar por temas como lógica digital, Logisim, programación, videos o repositorios.';
+    messages.insertAdjacentHTML('beforeend', `<p class="mr-6 rounded-lg bg-white/10 p-3 text-slate-200">${answer}</p>`);
+    messages.scrollTop = messages.scrollHeight;
+    if (input) input.value = '';
+  };
+  form?.addEventListener('submit', (event) => { event.preventDefault(); answerQuestion(input?.value.trim() ?? ''); });
+  document.querySelectorAll('[data-chat-question]').forEach((button) => button.addEventListener('click', () => answerQuestion(button.dataset.chatQuestion || '')));
+
+  const cookieNotice = document.querySelector('#cookie-notice'); if (!localStorage.getItem('calvo-cookie-choice')) cookieNotice?.classList.remove('hidden'); document.querySelector('#cookie-accept')?.addEventListener('click', () => { localStorage.setItem('calvo-cookie-choice', 'acknowledged'); cookieNotice?.classList.add('hidden'); });
+
+  const tour = document.querySelector('#site-tour');
+  const tourTitle = document.querySelector('#site-tour-title');
+  const tourDescription = document.querySelector('#site-tour-description');
+  const tourProgress = document.querySelector('#site-tour-progress');
+  const tourNext = document.querySelector('#site-tour-next');
+  const tourPrev = document.querySelector('#site-tour-prev');
+  const tourSkip = document.querySelector('#site-tour-skip');
+  const tourSteps = [
+    { title: 'Bienvenido a Calvo Blog', description: 'Aquí encontrarás tutoriales, guías, noticias y artículos para aprender tecnología con práctica.' },
+    { title: 'Explora el menú', description: 'Usa este botón para abrir las categorías y descubrir todo el contenido del sitio.', target: '#open-drawer' },
+    { title: 'Encuentra lo que buscas', description: 'La búsqueda local revisa títulos, categorías y etiquetas para llevarte rápidamente a un artículo.', target: '#open-search' },
+    { title: 'Pregunta al asistente', description: 'El chatbot puede buscar respuestas dentro del contenido publicado. También ofrece preguntas sugeridas.', target: '#chat-toggle' },
+    { title: 'Personaliza tu experiencia', description: 'En accesibilidad puedes cambiar el tamaño, tipo de texto, contraste, movimiento, colores y modo claro.', target: '#accessibility-toggle' },
+    { title: 'Atajos para usar el sitio', description: 'En PC puedes usar Alt+C para chatbot, Alt+A para accesibilidad, Alt+S para buscar, Alt+M para menú y Alt+↑ para volver arriba.' },
+  ];
+  let tourIndex = 0;
+  const clearTourTarget = () => document.querySelectorAll('.tour-target').forEach((element) => element.classList.remove('tour-target'));
+  const closeTour = () => {
+    clearTourTarget();
+    tour?.classList.add('hidden');
+    tour?.classList.remove('flex');
+    tour?.setAttribute('aria-hidden', 'true');
+    localStorage.setItem('calvo-tour-complete', 'true');
+  };
+  const renderTourStep = () => {
+    const step = tourSteps[tourIndex];
+    if (!step) return;
+    clearTourTarget();
+    tourTitle && (tourTitle.textContent = step.title);
+    tourDescription && (tourDescription.textContent = step.description);
+    tourProgress && (tourProgress.textContent = `Recorrido ${tourIndex + 1} de ${tourSteps.length}`);
+    if (step.target) document.querySelector(step.target)?.classList.add('tour-target');
+    tourPrev?.classList.toggle('invisible', tourIndex === 0);
+    if (tourNext) tourNext.textContent = tourIndex === tourSteps.length - 1 ? 'Terminar' : 'Siguiente';
+  };
+  const startTour = () => {
+    tourIndex = 0;
+    tour?.classList.remove('hidden');
+    tour?.classList.add('flex');
+    tour?.setAttribute('aria-hidden', 'false');
+    renderTourStep();
+    tourNext?.focus();
+  };
+  tourNext?.addEventListener('click', () => { if (tourIndex === tourSteps.length - 1) closeTour(); else { tourIndex += 1; renderTourStep(); } });
+  tourPrev?.addEventListener('click', () => { if (tourIndex > 0) { tourIndex -= 1; renderTourStep(); } });
+  tourSkip?.addEventListener('click', closeTour);
+  tour?.addEventListener('click', (event) => { if (event.target === tour) closeTour(); });
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && tour?.getAttribute('aria-hidden') === 'false') closeTour();
+    if (event.altKey && !event.ctrlKey && !event.metaKey && !event.shiftKey) {
+      const shortcut = event.key.toLowerCase();
+      const target = shortcut === 'c' ? '#chat-toggle' : shortcut === 'a' ? '#accessibility-toggle' : shortcut === 's' ? '#open-search' : shortcut === 'm' ? '#open-drawer' : null;
+      if (target) { event.preventDefault(); document.querySelector(target)?.dispatchEvent(new MouseEvent('click', { bubbles: true })); }
+      if (event.key === 'ArrowUp') { event.preventDefault(); topButton?.click(); }
+    }
+  });
+  if (!localStorage.getItem('calvo-tour-complete')) window.setTimeout(startTour, 650);
+</script>
+
+<style is:global>
+  .tour-target { position: relative; z-index: 61; outline: 3px solid var(--accent-color, #ffcc00); outline-offset: 5px; border-radius: .5rem; }
+  @media (prefers-reduced-motion: reduce) { .tour-target { outline-offset: 3px; } }
+</style>
