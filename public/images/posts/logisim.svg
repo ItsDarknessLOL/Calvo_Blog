@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+  <title id="title">Circuito conectado en un laboratorio digital</title><desc id="desc">Entradas conectadas a una compuerta y una salida.</desc>
+  <defs>
+    <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#101b27"/><stop offset="1" stop-color="#080a0d"/></linearGradient>
+    <linearGradient id="panel" x2="0" y2="1"><stop stop-color="#223142"/><stop offset="1" stop-color="#0b1016"/></linearGradient>
+    <filter id="shadow"><feGaussianBlur stdDeviation="14"/></filter><filter id="glow"><feGaussianBlur stdDeviation="6" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+  <rect width="1200" height="675" fill="url(#bg)"/><ellipse cx="600" cy="590" rx="470" ry="32" fill="#000" opacity=".7" filter="url(#shadow)"/>
+  <g transform="skewY(-4)"><rect x="105" y="105" width="990" height="475" rx="25" fill="#000" opacity=".75" transform="translate(15 18)"/><rect x="105" y="105" width="990" height="475" rx="25" fill="url(#panel)" stroke="#ffcc00" stroke-width="7"/>
+    <g fill="#d1d5db" stroke="#ffcc00" stroke-width="7"><rect x="155" y="185" width="185" height="80" rx="14"/><rect x="155" y="405" width="185" height="80" rx="14"/><path d="M540 185h115c145 0 145 300 0 300H540z"/><rect x="895" y="293" width="155" height="90" rx="14"/></g>
+    <g fill="none" stroke="#ffcc00" stroke-width="10"><path d="M340 225h200m-200 220h200m230-110h125"/></g>
+    <g fill="#ffcc00" filter="url(#glow)"><circle cx="340" cy="225" r="15"/><circle cx="340" cy="445" r="15"/><circle cx="885" cy="335" r="15"/></g>
+    <g fill="#111a24" font-family="system-ui,sans-serif" font-size="29" font-weight="700"><text x="183" y="235">INPUT</text><text x="183" y="455">INPUT</text><text x="580" y="350">AND</text><text x="925" y="350">OUT</text></g>
+  </g>
+</svg>

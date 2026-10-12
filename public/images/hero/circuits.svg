@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Circuitos digitales abstractos</title>
+  <desc id="desc">Placa digital con conexiones amarillas y nodos luminosos.</desc>
+  <defs>
+    <linearGradient id="bg" x2="1" y2="1"><stop stop-color="#08090b"/><stop offset=".55" stop-color="#12151b"/><stop offset="1" stop-color="#090a0d"/></linearGradient>
+    <linearGradient id="trace" x2="1"><stop stop-color="#ffcc00" stop-opacity=".2"/><stop offset=".45" stop-color="#ffcc00"/><stop offset="1" stop-color="#7a6200" stop-opacity=".35"/></linearGradient>
+    <radialGradient id="node"><stop stop-color="#fff" stop-opacity=".95"/><stop offset=".22" stop-color="#ffcc00"/><stop offset="1" stop-color="#ffcc00" stop-opacity="0"/></radialGradient>
+    <filter id="glow"><feGaussianBlur stdDeviation="9" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <pattern id="grid" width="80" height="80" patternUnits="userSpaceOnUse"><path d="M80 0H0V80" fill="none" stroke="#fff" stroke-opacity=".035"/></pattern>
+  </defs>
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <rect width="1600" height="900" fill="url(#grid)"/>
+  <g fill="none" stroke="url(#trace)" stroke-linecap="round" stroke-linejoin="round">
+    <path stroke-width="10" opacity=".16" d="M-80 230h390l120 120h300l120-120h830"/>
+    <path stroke-width="4" d="M-80 230h390l120 120h300l120-120h830"/>
+    <path stroke-width="9" opacity=".14" d="M-80 680h310l150-150h310l100 100h890"/>
+    <path stroke-width="4" d="M-80 680h310l150-150h310l100 100h890"/>
+    <path stroke-width="5" d="M1090 -60v220l-120 120v170l190 190v320M350 950V770l150-150V500"/>
+  </g>
+  <g fill="url(#node)" filter="url(#glow)">
+    <circle cx="310" cy="230" r="48"/><circle cx="430" cy="350" r="48"/><circle cx="750" cy="350" r="48"/>
+    <circle cx="460" cy="530" r="48"/><circle cx="870" cy="630" r="48"/><circle cx="970" cy="280" r="48"/>
+  </g>
+  <g fill="#d9dde5"><circle cx="310" cy="230" r="8"/><circle cx="430" cy="350" r="8"/><circle cx="750" cy="350" r="8"/><circle cx="460" cy="530" r="8"/><circle cx="870" cy="630" r="8"/><circle cx="970" cy="280" r="8"/></g>
+  <text x="100" y="820" fill="#fff" font-family="system-ui,sans-serif" font-size="44" font-weight="700" letter-spacing="8" opacity=".65">CALVO / BLOG</text>
+</svg>
