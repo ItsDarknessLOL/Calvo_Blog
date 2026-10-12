@@ -1,4 +1,11 @@
 {
+  "redirects": [
+    {
+      "source": "/laboratorio/karnaugh",
+      "destination": "/laboratorio/karnaugh/",
+      "permanent": true
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",
