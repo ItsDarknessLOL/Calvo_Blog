@@ -1,0 +1,18 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Karnaugh3D from '../../components/karnaugh3d/Karnaugh3D';
+---
+
+<BaseLayout
+  title="Taller 3D de mapas de Karnaugh"
+  description="Construye y explora mapas de Karnaugh de una a seis variables en capas 3D."
+>
+  <div class="border-b border-borderLine bg-darkPage px-[var(--page-gutter)] py-4">
+    <div class="mx-auto max-w-7xl">
+      <a href="/tutoriales/simplifica-con-karnaugh" class="text-sm font-bold text-amberBtn hover:text-amberHover">
+        ← Volver al tutorial
+      </a>
+    </div>
+  </div>
+  <Karnaugh3D client:load />
+</BaseLayout>

@@ -1,0 +1,34 @@
+[
+  {
+    "keywords": ["hola", "buenas", "buenos dias", "buenas tardes", "hey", "saludos"],
+    "answer": "¡Hola! Puedo ayudarte a usar el taller de Karnaugh o explicar conceptos como minterms, capas, código Gray y simplificación."
+  },
+  {
+    "keywords": ["mapa de karnaugh", "karnaugh", "k map", "que es"],
+    "answer": "Un mapa de Karnaugh organiza los valores de una función booleana para reconocer celdas adyacentes y simplificar la expresión lógica."
+  },
+  {
+    "keywords": ["capa", "capas", "ocultar", "mostrar todas", "ver todas", "transparencia", "enfocar"],
+    "answer": "Con 5 variables se usan 2 capas de 4 × 4; con 6, 4 capas. Pulsa una capa para enfocarla: las demás se ven transparentes. Usa el icono ◉/○ para ocultar o mostrar una capa, o “Ver todas” para restaurarlas y observarlas completas a la vez."
+  },
+  {
+    "keywords": ["variables", "a b c d e f", "cinco variables", "seis variables"],
+    "answer": "El taller admite de 1 a 6 variables, nombradas A, B, C, D, E y F. Hay 2ⁿ minterms: por ejemplo, 32 con 5 variables y 64 con 6."
+  },
+  {
+    "keywords": ["salida", "salidas", "led", "display", "siete segmentos", "segmento"],
+    "answer": "Puedes definir entre 1 y 6 salidas, a–f. Cada salida guarda su propio mapa. El LED prueba la salida seleccionada y el display representa las salidas activas como segmentos."
+  },
+  {
+    "keywords": ["minterm", "minterms", "celda", "activar", "uno", "cero"],
+    "answer": "Cada celda es un minterm, una combinación concreta de entradas. Haz clic o toca una celda para alternar entre 0 y 1. Después usa los botones A–F para probar el minterm correspondiente en el circuito."
+  },
+  {
+    "keywords": ["codigo gray", "gray", "adyacencia", "adyacente", "borde", "agrupar", "simplificar"],
+    "answer": "El orden Gray hace que dos celdas vecinas cambien solo una variable. Agrupa 1, 2, 4, 8… celdas adyacentes; los bordes opuestos también se consideran vecinos."
+  },
+  {
+    "keywords": ["telefono", "movil", "celular", "pc", "computadora", "rotar", "arrastrar", "tocar"],
+    "answer": "En computadora, arrastra la escena para rotarla y haz clic en una celda. En teléfono, desliza para rotar y toca una celda. Los controles de capas funcionan igual en ambos dispositivos."
+  }
+]

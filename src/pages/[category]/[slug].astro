@@ -1,0 +1,31 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { sections, sectionSlugs, type SectionSlug } from '../../lib/content';
+
+export async function getStaticPaths() {
+  const paths = await Promise.all(sectionSlugs.map(async (category) =>
+    (await getCollection(category)).map((post) => ({ params: { category, slug: post.slug }, props: { post, category } }))
+  ));
+  return paths.flat();
+}
+
+const { post, category } = Astro.props;
+const { Content } = await render(post);
+const section = sections[category as SectionSlug];
+const date = new Intl.DateTimeFormat('es-MX', { dateStyle: 'long' }).format(post.data.pubDate);
+---
+
+<BaseLayout title={post.data.title} description={post.data.description} image={post.data.heroImage} navbarAction={post.data.navbarAction}>
+  <article class="mx-auto max-w-3xl px-[var(--page-gutter)] py-12 sm:py-16">
+    <a href={`/${category}`} class="text-sm font-semibold text-amberBtn hover:text-amberHover">← Volver a {section.label}</a>
+    <header class="mt-7 border-b border-borderLine pb-8">
+      <div class="flex flex-wrap gap-2 text-xs font-semibold"><span class="rounded bg-amberBtn px-2.5 py-1 text-black">{post.data.category}</span>{post.data.tags.map((tag: string) => <span class="rounded border border-borderLine px-2.5 py-1 text-slate-300">{tag}</span>)}</div>
+      <h1 class="mt-5 text-3xl font-extrabold leading-tight text-white sm:text-5xl">{post.data.title}</h1>
+      <p class="mt-4 text-lg leading-7 text-slate-300">{post.data.description}</p>
+      <time class="mt-5 block text-sm text-slate-400" datetime={post.data.pubDate.toISOString()}>{date}</time>
+    </header>
+    {post.data.heroImage && <div class="post-art-frame mt-8 overflow-hidden rounded-xl border border-borderLine"><img src={post.data.heroImage} alt={post.data.heroImageAlt || `Imagen de portada de ${post.data.title}`} class="post-art aspect-video w-full object-cover" /></div>}
+    <div class="prose-calvo mt-10"><Content /></div>
+  </article>
+</BaseLayout>

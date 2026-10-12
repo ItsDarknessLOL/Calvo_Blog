@@ -1,0 +1,37 @@
+---
+interface Slide {
+  eyebrow: string;
+  title: string;
+  description: string;
+  imageSrc: string;
+  imageAlt: string;
+  ctaHref: string;
+  ctaLabel: string;
+}
+interface Props { slides: Slide[] }
+const { slides } = Astro.props;
+---
+
+<section class="hero-carousel relative isolate overflow-hidden rounded-2xl border border-borderLine bg-black" aria-roledescription="carrusel" aria-label="Destacados de Calvo Blog">
+  <div class="relative min-h-[var(--hero-min-height)]">
+    {slides.map((slide, index) => (
+      <article class:list={['hero-slide absolute inset-0 grid content-end p-7 transition-all duration-700 sm:p-12', { 'is-active': index === 0 }]} aria-hidden={index === 0 ? 'false' : 'true'} data-slide={index}>
+        <img src={slide.imageSrc} alt={slide.imageAlt} class:list={['hero-art absolute inset-0 -z-20 h-full w-full object-cover opacity-70 transition duration-[1800ms]', `hero-art-${index}`]} />
+        <div class="absolute inset-0 -z-10 bg-[linear-gradient(90deg,rgba(0,0,0,.95),rgba(0,0,0,.60)_54%,rgba(0,0,0,.20)),linear-gradient(0deg,rgba(0,0,0,.70),transparent_65%)]"></div>
+        <div class="max-w-2xl"><p class="hero-reveal text-xs font-bold uppercase tracking-[0.23em] text-amberBtn">{slide.eyebrow}</p><h1 class="hero-reveal mt-3 text-4xl font-extrabold leading-[.98] text-white sm:text-6xl">{slide.title}</h1><p class="hero-reveal mt-5 max-w-lg text-base leading-7 text-slate-200 sm:text-lg">{slide.description}</p><a href={slide.ctaHref} class="hero-reveal mt-7 inline-flex items-center gap-2 rounded-lg bg-amberBtn px-5 py-3 text-sm font-bold text-black transition hover:bg-amberHover">{slide.ctaLabel}<span aria-hidden="true">→</span></a></div>
+      </article>
+    ))}
+  </div>
+  <div class="absolute bottom-6 right-6 z-20 flex items-center gap-2 sm:bottom-9 sm:right-10"><button type="button" class="hero-pause grid h-9 w-9 place-items-center rounded-full border border-white/30 bg-black/35 text-white backdrop-blur transition hover:border-amberBtn focus-visible:ring-2 focus-visible:ring-amberBtn" aria-label="Pausar carrusel">Ⅱ</button>{slides.map((slide, index) => <button type="button" class:list={['hero-dot h-2.5 rounded-full bg-white/50 transition-all focus-visible:ring-2 focus-visible:ring-amberBtn', { 'is-active': index === 0 }]} data-go-to={index} aria-label={`Mostrar: ${slide.title}`} aria-current={index === 0 ? 'true' : 'false'}></button>)}</div>
+</section>
+
+<script>
+  const carousel = document.querySelector('.hero-carousel'); const slides = [...document.querySelectorAll<HTMLElement>('.hero-slide')]; const dots = [...document.querySelectorAll<HTMLButtonElement>('.hero-dot')]; const pauseButton = document.querySelector<HTMLButtonElement>('.hero-pause'); let active = 0; let paused = window.matchMedia('(prefers-reduced-motion: reduce)').matches; let timer: number | undefined;
+  const show = (next: number) => { active = next; slides.forEach((slide, index) => { const selected = index === active; slide.classList.toggle('is-active', selected); slide.setAttribute('aria-hidden', String(!selected)); }); dots.forEach((dot, index) => { const selected = index === active; dot.classList.toggle('is-active', selected); dot.setAttribute('aria-current', String(selected)); }); };
+  const play = () => { if (!paused && slides.length > 1) timer = window.setInterval(() => show((active + 1) % slides.length), 8000); }; const reset = () => { if (timer) window.clearInterval(timer); play(); };
+  dots.forEach((dot, index) => dot.addEventListener('click', () => { show(index); reset(); })); pauseButton?.addEventListener('click', () => { paused = !paused; pauseButton.textContent = paused ? '▶' : 'Ⅱ'; pauseButton.setAttribute('aria-label', paused ? 'Reanudar carrusel' : 'Pausar carrusel'); reset(); }); carousel?.addEventListener('mouseenter', () => { if (timer) window.clearInterval(timer); }); carousel?.addEventListener('mouseleave', play); play();
+</script>
+
+<style>
+  .hero-slide { opacity: 0; pointer-events: none; transform: scale(1.025); transform-style: preserve-3d; } .hero-slide.is-active { opacity: 1; pointer-events: auto; transform: scale(1); } .hero-art { transform: scale(1.04) translateZ(-18px); filter: saturate(.9) contrast(1.08) drop-shadow(0 18px 28px rgba(0,0,0,.32)); } .hero-slide.is-active .hero-art { animation: slow-zoom 8s ease-out both; } .hero-slide:hover .hero-art { filter: saturate(1.05) contrast(1.08) drop-shadow(0 24px 42px rgba(255,204,0,.12)); } .hero-slide .hero-reveal { opacity: 0; transform: translateY(18px); } .hero-slide.is-active .hero-reveal { animation: reveal .65s ease-out forwards; } .hero-slide.is-active .hero-reveal:nth-child(2) { animation-delay: .08s; } .hero-slide.is-active .hero-reveal:nth-child(3) { animation-delay: .16s; } .hero-slide.is-active .hero-reveal:nth-child(4) { animation-delay: .24s; } .hero-dot { width: .625rem; } .hero-dot.is-active { width: 1.75rem; background: #ffcc00; } @keyframes reveal { to { opacity: 1; transform: translateY(0); } } @keyframes slow-zoom { from { transform: scale(1.04) translate3d(0,0,-18px); } to { transform: scale(1.09) translate3d(-.6%, -.4%, -18px); } } @media (prefers-reduced-motion: reduce) { .hero-slide, .hero-slide.is-active img, .hero-slide.is-active .hero-reveal { animation: none; transition: none; transform: none; } .hero-slide.is-active .hero-reveal { opacity: 1; } }
+</style>
